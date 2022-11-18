@@ -41,6 +41,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
@@ -48,6 +49,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.reader.readerapp.model.Item
 import com.reader.readerapp.model.MBook
 import com.reader.readerapp.navigation.ReaderScreens
+import com.reader.readerapp.screens.login.LoginScreenViewModel
 import com.reader.readerapp.screens.search.BookSearchViewModel
 
 @Composable
@@ -190,6 +192,7 @@ fun ReaderAppBar(
     icon:ImageVector? = null,
     showProfile:Boolean = true,
     navController: NavController,
+    viewModel: LoginScreenViewModel = hiltViewModel(),
     onBAckArrowCLicked:()->Unit = {}
 ){
     val scope = rememberCoroutineScope()
@@ -224,7 +227,7 @@ fun ReaderAppBar(
         }
     }, actions = {
         IconButton(onClick = {
-            FirebaseAuth.getInstance().signOut().run{
+            viewModel.LogOut(){
                 navController.navigate(ReaderScreens.LoginScreen.name)
             }
 
@@ -393,7 +396,8 @@ fun BookCard(navController: NavController,
                     .fillMaxHeight())
             Spacer(modifier = Modifier.height(10.dp))
             Column(modifier = Modifier.padding(start = 10.dp)) {
-                Text(text = book.volumeInfo.title.toString(), style = MaterialTheme.typography.subtitle1,
+                Text(text = book.volumeInfo.title.toString(),
+                    style = MaterialTheme.typography.subtitle1,
                     overflow = TextOverflow.Ellipsis)
                 Text(text = "Author: ${book.volumeInfo.authors}", fontFamily = FontFamily.SansSerif,
                     fontStyle = FontStyle.Italic, overflow = TextOverflow.Clip)

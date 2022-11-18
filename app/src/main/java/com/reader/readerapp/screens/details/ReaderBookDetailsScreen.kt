@@ -2,7 +2,6 @@ package com.reader.readerapp.screens.details
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -25,7 +24,6 @@ import androidx.core.text.HtmlCompat
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.reader.readerapp.components.ReaderAppBar
 import com.reader.readerapp.components.RoundedButton
 import com.reader.readerapp.data.Resource
@@ -54,7 +52,7 @@ fun BookDetailsScreen(navController: NavController,
             else {
                 if(bookInfo.value is Resource.Succes)
                     BookDetailedView(bookInfo.value
-                        .data?.volumeInfo?:VolumeInfo(),navController,bookId)
+                        .data?.volumeInfo?:VolumeInfo(),navController,bookId,viewModel)
 
             } }
 
@@ -62,7 +60,12 @@ fun BookDetailsScreen(navController: NavController,
 }
 
 @Composable
-fun BookDetailedView(book: VolumeInfo = VolumeInfo(), navController: NavController, bookId: String){
+fun BookDetailedView(
+    book: VolumeInfo = VolumeInfo(),
+    navController: NavController,
+    bookId: String,
+    viewModel: BooksDetailViewModel
+){
 
 
     val context = LocalContext.current
@@ -121,7 +124,7 @@ fun BookDetailedView(book: VolumeInfo = VolumeInfo(), navController: NavControll
                     googleBookID = bookId,
                     userID = FirebaseAuth.getInstance().currentUser?.uid.toString()
                 )
-                saveToFireBase(bookSavable,navController,context)
+                saveToFireBase(bookSavable,navController,context,viewModel)
 
             }
             RoundedButton(label = "Cancel"){
@@ -135,33 +138,15 @@ fun BookDetailedView(book: VolumeInfo = VolumeInfo(), navController: NavControll
 }
 
 
-fun saveToFireBase(book: MBook, navController: NavController, context: Context) {
-    val db = FirebaseFirestore.getInstance()
-    val dbCOllection = db.collection("books")
-    if(book.toString().isNotEmpty()){
-        dbCOllection.add(book)
-            .addOnSuccessListener {
-                documentRef->
-            val docId = documentRef.id
-            dbCOllection.document(docId)
-                .update(hashMapOf("id" to docId) as Map<String, Any>)
-                .addOnCompleteListener{
-                    task->
-                    if(task.isSuccessful){
-                        Toast.makeText(context,"Book saved succesfully",
-                            Toast.LENGTH_SHORT).show()
-                        navController.popBackStack()
-                    }
-                }.addOnFailureListener{
-                    error->
-                    Log.w("TAG","SAve to firebase error updating do: $error")
-                }
-            }
-    }
-    else{
-
-    }
-
+fun saveToFireBase(book: MBook, navController: NavController, context: Context,viewModel: BooksDetailViewModel) {
+    viewModel.saveBookToNetWork(book){
+            Toast.makeText(context,"Book saved succesfully",
+                Toast.LENGTH_SHORT).show()
+            navController.popBackStack()
+        }
 }
+
+
+
 
 

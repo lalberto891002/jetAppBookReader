@@ -35,7 +35,7 @@ import com.reader.readerapp.navigation.ReaderScreens
 
 @Composable
 fun LoginScreen(navController: NavController,
-    viewModel: LoginScreenViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+    viewModel: LoginScreenViewModel) {
 
     val showLogginForm  = rememberSaveable{ mutableStateOf(true) }
 
