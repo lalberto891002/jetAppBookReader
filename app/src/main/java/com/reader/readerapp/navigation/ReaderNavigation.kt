@@ -12,6 +12,7 @@ import com.reader.readerapp.screens.SplasScreen
 import com.reader.readerapp.screens.details.BookDetailsScreen
 import com.reader.readerapp.screens.details.BooksDetailViewModel
 import com.reader.readerapp.screens.home.HomeScreen
+import com.reader.readerapp.screens.home.HomeScreenviewModel
 import com.reader.readerapp.screens.login.LoginScreen
 import com.reader.readerapp.screens.login.LoginScreenViewModel
 import com.reader.readerapp.screens.search.BookSearchViewModel
@@ -28,7 +29,8 @@ fun ReaderNavigation()  {
             SplasScreen(navController = navController)
         }
         composable(ReaderScreens.ReaderHomeScreen.name){
-            HomeScreen(navController = navController)
+            val viewModel = hiltViewModel<HomeScreenviewModel>()
+            HomeScreen(navController = navController,viewModel = viewModel)
         }
         composable(ReaderScreens.LoginScreen.name){
            val viewModel = hiltViewModel<LoginScreenViewModel>()

@@ -12,14 +12,16 @@ import javax.inject.Inject
 
 class FireBaseNetworkImpl @Inject constructor(private val firebaseStore: FirebaseFirestore)
     :FireBaseNetwork {
-    private val auth: FirebaseAuth = Firebase.auth
+    override val auth: FirebaseAuth = Firebase.auth
+    override val dbCollection = firebaseStore.collection("books")
+
+
     override suspend fun saveBookToNetWork(book: MBook, succesfully: () -> Unit) {
-        val dbCOllection = firebaseStore.collection("books")
         if (book.toString().isNotEmpty()) {
-            dbCOllection.add(book)
+            dbCollection.add(book)
                 .addOnSuccessListener { documentRef ->
                     val docId = documentRef.id
-                    dbCOllection.document(docId)
+                    dbCollection.document(docId)
                         .update(hashMapOf("id" to docId) as Map<String, Any>)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
@@ -81,6 +83,8 @@ class FireBaseNetworkImpl @Inject constructor(private val firebaseStore: Firebas
             executeAfterLogOut()
         }
     }
+
+
 
 
 }

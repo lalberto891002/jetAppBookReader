@@ -277,7 +277,7 @@ fun ListCard(book:MBook = MBook("asdf","Running","Me and You","Hello world"),
         Column(modifier = Modifier.width(screenWidth.dp - (spacing  * 2)),
             horizontalAlignment = Alignment.Start) {
             Row(horizontalArrangement = Arrangement.Center){
-                Image(painter = rememberAsyncImagePainter(model = "https://i.ytimg.com/vi/tuGOId6rNCo/default.jpg"),
+                Image(painter = rememberAsyncImagePainter(model = book.photoUrl),
                     contentDescription = "Image Painter",
                     modifier = Modifier
                         .height(140.dp)
