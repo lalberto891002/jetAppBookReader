@@ -111,7 +111,7 @@ fun HomeContent(navController: NavController = NavController(LocalContext.curren
 @Composable
 fun BookListArea(listOfBooks: List<MBook>, navController: NavController) {
     HorizontalScrollableComponent(listOfBooks){book->
-        Log.d("Tag","Clicled $book")
+        navController.navigate(ReaderScreens.UpdateScreen.name + "/${book}")
 
     }
 }
@@ -137,7 +137,7 @@ fun HorizontalScrollableComponent(listOfBooks: List<MBook>,onCardPress:(String)-
 @Composable
 fun ReadingRightNowArea(books:List<MBook>, navController: NavController){
     Row(){
-        ListCard(if(!books.isNullOrEmpty())books.get(0) else MBook()){
+        HorizontalScrollableComponent(books){
             Log.d("TAG","Pressed:$it")
         }
     }

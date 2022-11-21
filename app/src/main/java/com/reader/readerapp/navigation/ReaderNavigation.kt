@@ -2,7 +2,6 @@ package com.reader.readerapp.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,6 +17,7 @@ import com.reader.readerapp.screens.login.LoginScreenViewModel
 import com.reader.readerapp.screens.search.BookSearchViewModel
 import com.reader.readerapp.screens.search.SearchScreen
 import com.reader.readerapp.screens.stats.StatsScreen
+import com.reader.readerapp.screens.update.UpdateScreen
 
 
 @Composable
@@ -64,7 +64,20 @@ fun ReaderNavigation()  {
                 viewModel = viewModel,bookId = bookId)
         }
 
-
+        val routeUpdate = ReaderScreens.UpdateScreen.name
+        composable("$routeUpdate/{bookItemId}",
+        arguments = listOf(
+            navArgument(name = "bookItemId"){
+                type = NavType.StringType
+            })
+        ){ navBack->
+            var bookID = ""
+            navBack.arguments?.let {
+                bookID = navBack.arguments!!.getString("bookItemId").toString()
+            }
+            val viewModel = hiltViewModel<HomeScreenviewModel>()
+            UpdateScreen(bookID = bookID, navController,viewModel = viewModel)
+        }
 
 
     }
