@@ -37,4 +37,17 @@ class HomeScreenviewModel @Inject constructor(val repository: FireBaseRepository
     Log.d("TAG","getBooksFromDB:${data.value.data}")
     }
 
+    fun updateBook(book: MBook, bookToUpdate: Map<String, Comparable<*>?>,onSuccess:()->Unit={},onFailure:()->Unit={}) {
+        viewModelScope.launch {
+            repository.updateBookd(book,bookToUpdate,onSuccess,onFailure)
+        }
+
+    }
+
+    fun deleBook(book:MBook,onComplete:()->Unit){
+        viewModelScope.launch {
+            repository.deleBook(book,onComplete)
+        }
+    }
+
 }

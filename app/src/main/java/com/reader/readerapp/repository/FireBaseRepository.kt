@@ -1,18 +1,10 @@
 package com.reader.readerapp.repository
 
 import android.util.Log
-import com.google.android.gms.tasks.RuntimeExecutionException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.ktx.Firebase
 import com.reader.readerapp.data.DataOrException
-import com.reader.readerapp.model.Book
 import com.reader.readerapp.model.MBook
-import com.reader.readerapp.model.MUser
 import com.reader.readerapp.network.FireBaseNetwork
-import com.reader.readerapp.network.FireBaseNetworkImpl
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -60,6 +52,14 @@ class FireBaseRepository @Inject constructor(val api:FireBaseNetwork) {
         }
 
         return dataOrException
+    }
+
+     suspend fun updateBookd(book: MBook, bookToUpdate: Map<String, Comparable<*>?>,onSucces:()->Unit,onFailure:()->Unit){
+         api.updateBookd(book,bookToUpdate,onSucces,onFailure)
+     }
+
+    suspend fun deleBook(book: MBook,onComplete:()->Unit){
+        api.deleteBook(book,onComplete)
     }
 
 }

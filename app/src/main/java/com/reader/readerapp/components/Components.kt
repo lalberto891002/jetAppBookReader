@@ -1,7 +1,14 @@
 package com.reader.readerapp.components
 
 import android.util.Log
+import android.view.MotionEvent
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,6 +31,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -433,6 +441,60 @@ fun BooKVerticallScrollable(navController: NavController,viewModel: BookSearchVi
 
             }
     }
+
+
+    }
+
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun RatingBar(
+    modifier:Modifier = Modifier,
+    rating:Int,
+    onPressRating:(Int) -> Unit,
+
+){
+
+    var ratingState by remember {
+        mutableStateOf(rating)
+    }
+
+    var selected by remember {
+        mutableStateOf(false)
+    }
+
+    val size by animateDpAsState(
+        targetValue = if(selected) 42.dp else 34.dp, spring(Spring.DampingRatioMediumBouncy))
+
+    Row(
+        modifier = Modifier.width(280.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ){
+        for(i in 1..5){
+           Icon(
+               imageVector = Icons.Default.Star,
+               contentDescription = "Star",
+           modifier = modifier.width(size)
+               .height(size)
+               .pointerInteropFilter {motionEvent ->
+               when(motionEvent.action){
+                   MotionEvent.ACTION_DOWN ->{
+                      selected = true
+                      onPressRating(i)
+                      ratingState = i
+                   }
+                   MotionEvent.ACTION_UP->{
+                       selected = false
+                   }
+
+
+               }
+                   true
+               },
+           tint = if(i<= ratingState) Color(0xFFFFD700) else Color(0xFFA2ADB1))
+        }
 
 
     }

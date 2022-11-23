@@ -84,7 +84,31 @@ class FireBaseNetworkImpl @Inject constructor(private val firebaseStore: Firebas
         }
     }
 
+    override suspend fun updateBookd(
+        book: MBook,
+        bookToUpdate: Map<String, Comparable<*>?>,
+        onSucces: () -> Unit,
+        onFailure: () -> Unit
+    ) {
+       dbCollection.document(book.id!!)
+           .update(bookToUpdate)
+           .addOnSuccessListener {
+               onSucces()
+               Log.d("Succes","Succes Updating document")
+           }
+           .addOnFailureListener{
+               onFailure()
+               Log.d("Error","Error Updating document",it)
+           }
+    }
 
+    override suspend fun deleteBook(book: MBook, onComplete: () -> Unit) {
+       dbCollection.document(book.id!!)
+           .delete()
+           .addOnSuccessListener{
+               onComplete.invoke()
+           }
+    }
 
 
 }

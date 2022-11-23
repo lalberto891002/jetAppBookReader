@@ -14,6 +14,15 @@ interface FireBaseNetwork {
 
     fun logOut(executeAfterLogOut:()->Unit)
 
+    suspend fun updateBookd(
+        book: MBook,
+        bookToUpdate: Map<String, Comparable<*>?>,
+        onSucces: () -> Unit,
+        onFailure: () -> Unit
+    )
+
+    suspend fun deleteBook(book:MBook,onComplete:()->Unit)
+
     val dbCollection: Query
     val auth: FirebaseAuth
 }
