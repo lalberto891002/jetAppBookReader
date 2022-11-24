@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeScreenviewModel @Inject constructor(val repository: FireBaseRepository):ViewModel() {
+class HomeScreenviewModel @Inject constructor(private val repository: FireBaseRepository):ViewModel() {
 
     val data:MutableState<DataOrException<List<MBook>,Boolean,Exception>> = mutableStateOf(
         DataOrException(
@@ -22,7 +22,8 @@ class HomeScreenviewModel @Inject constructor(val repository: FireBaseRepository
         )
     )
 
-    var currentUser = repository.auth.currentUser
+   private var _currentUser = repository.auth.currentUser
+    val currentUser = _currentUser
 
     init {
         getBooks()

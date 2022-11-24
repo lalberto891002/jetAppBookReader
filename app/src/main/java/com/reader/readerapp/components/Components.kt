@@ -19,6 +19,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -267,6 +268,9 @@ fun FabContent(onTap: () -> Unit) {
 fun ListCard(book:MBook = MBook("asdf","Running","Me and You","Hello world"),
              onPressDetails:(String)->Unit = {
              }){
+    var stateReading by remember {
+        mutableStateOf("Pending")
+    }
     val context = LocalContext.current
     val resources = context.resources
     val displayMetrics = resources.displayMetrics
@@ -295,11 +299,12 @@ fun ListCard(book:MBook = MBook("asdf","Running","Me and You","Hello world"),
                 Column(modifier = Modifier.padding(top = 25.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(imageVector = Icons.Rounded.FavoriteBorder,
+                    Icon(imageVector = if(book.rating!! <= 4.0 )Icons.Rounded.FavoriteBorder else Icons.Rounded.Favorite,
+                        tint = if(book.rating!! <= 4.0) Color.Gray else Color.Red,
                         contentDescription = "Fav Icon",
                         modifier = Modifier.padding(1.dp))
 
-                    BookReating(score = 3.5)
+                    BookReating(score = book.rating!!)
 
                 }
             }
@@ -316,9 +321,13 @@ fun ListCard(book:MBook = MBook("asdf","Running","Me and You","Hello world"),
 
 
         }
+
+        stateReading =if(book.startedReading == null)"Pending"
+            else if(book.finishedReading == null) "Reading" else "Read"
+
         Row(horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.Bottom) {
-            RoundedButton(label = "Reading",radius = 70)
+            RoundedButton(label = stateReading,radius = 70)
         }
     }
 
@@ -476,21 +485,22 @@ fun RatingBar(
            Icon(
                imageVector = Icons.Default.Star,
                contentDescription = "Star",
-           modifier = modifier.width(size)
+           modifier = modifier
+               .width(size)
                .height(size)
-               .pointerInteropFilter {motionEvent ->
-               when(motionEvent.action){
-                   MotionEvent.ACTION_DOWN ->{
-                      selected = true
-                      onPressRating(i)
-                      ratingState = i
-                   }
-                   MotionEvent.ACTION_UP->{
-                       selected = false
-                   }
+               .pointerInteropFilter { motionEvent ->
+                   when (motionEvent.action) {
+                       MotionEvent.ACTION_DOWN -> {
+                           selected = true
+                           onPressRating(i)
+                           ratingState = i
+                       }
+                       MotionEvent.ACTION_UP -> {
+                           selected = false
+                       }
 
 
-               }
+                   }
                    true
                },
            tint = if(i<= ratingState) Color(0xFFFFD700) else Color(0xFFA2ADB1))

@@ -14,6 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -110,7 +112,13 @@ fun HomeContent(navController: NavController = NavController(LocalContext.curren
 
 @Composable
 fun BookListArea(listOfBooks: List<MBook>, navController: NavController) {
-    HorizontalScrollableComponent(listOfBooks){book->
+
+    val toReadBooks = listOfBooks.filter {book->
+
+        book.startedReading == null || book.finishedReading != null
+    }
+
+    HorizontalScrollableComponent(toReadBooks){book->
         navController.navigate(ReaderScreens.UpdateScreen.name + "/${book}")
 
     }
@@ -137,9 +145,25 @@ fun HorizontalScrollableComponent(listOfBooks: List<MBook>,onCardPress:(String)-
 @Composable
 fun ReadingRightNowArea(books:List<MBook>, navController: NavController){
     Row(){
-        HorizontalScrollableComponent(books){
-            Log.d("TAG","Pressed:$it")
+        
+        val bookReadingNow = books.filter {
+                book->
+            book.startedReading != null && book.finishedReading == null
         }
+        if(bookReadingNow.isNullOrEmpty()){
+            Text(text = "No Books Reading at the moment",style = TextStyle(
+                color = Color.Red.copy(alpha = 0.4f),
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp
+            ))
+            Spacer(modifier = Modifier.height(100.dp))
+        }else{
+            HorizontalScrollableComponent(bookReadingNow){booId->
+
+                navController.navigate(ReaderScreens.UpdateScreen.name + "/$booId")
+            }
+        }
+      
     }
 
 }

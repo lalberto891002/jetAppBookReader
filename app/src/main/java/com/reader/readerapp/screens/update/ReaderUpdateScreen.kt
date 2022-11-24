@@ -22,8 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -40,6 +43,7 @@ import com.reader.readerapp.components.RatingBar
 import com.reader.readerapp.components.ReaderAppBar
 import com.reader.readerapp.components.RoundedButton
 import com.reader.readerapp.data.DataOrException
+import com.reader.readerapp.model.Item
 import com.reader.readerapp.model.MBook
 import com.reader.readerapp.navigation.ReaderScreens
 import com.reader.readerapp.screens.home.HomeScreenviewModel
@@ -101,8 +105,8 @@ viewModel: HomeScreenviewModel = hiltViewModel()) {
 @Composable
 fun ShowSimpleForm(book: MBook?, navController: NavController,viewModel: HomeScreenviewModel) {
 
-    val noteText = rememberSaveable {
-        mutableStateOf("")
+    val noteText = rememberSaveable(book?.notes) {
+        mutableStateOf(book?.notes?:"")
 
     }
     SimpleForm(defaultValue = if(book?.notes?.isNotEmpty() == true)book?.notes.toString()
@@ -362,5 +366,7 @@ fun CardListItem(book: MBook, onPressDetails: () -> Unit) {
 
     }
 }
+
+
 
 
